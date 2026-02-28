@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lumière Lash Studio — [BUSINESS NAME]</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ─── RESET & ROOT ─── */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --cream: #FAF7F2;
+    --black: #1A1A1A;
+    --rose-gold: #E8A0B4;
+    --rose-gold-deep: #D4789A;
+    --rose-gold-light: rgba(232,160,180,0.15);
+    --text-muted: #7A6E65;
+    --white: #ffffff;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--black);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ─── CUSTOM CURSOR ─── */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--rose-gold);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+    mix-blend-mode: multiply;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(232,160,180,0.5);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.4s ease, width 0.4s ease, height 0.4s ease;
+  }
+  .cursor.hover { width: 20px; height: 20px; opacity: 0.7; }
+
+  /* ─── LOADING BAR ─── */
+  #loading-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    width: 0;
+    background: linear-gradient(90deg, var(--rose-gold-deep), var(--rose-gold), var(--rose-gold-deep));
+    z-index: 10000;
+    transition: width 0.6s ease;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; width: 100%;
+    z-index: 100;
+    padding: 1.5rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.4s ease, padding 0.4s ease, backdrop-filter 0.4s ease;
+  }
+  nav.scrolled {
+    background: rgba(250,247,242,0.92);
+    backdrop-filter: blur(12px);
+    padding: 1rem 3rem;
+    border-bottom: 1px solid rgba(232,160,180,0.2);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: var(--black);
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--black);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.3s;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -3px; left: 0;
+    width: 0; height: 1px;
+    background: var(--rose-gold);
+    transition: width 0.3s ease;
+  }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-links a:hover { color: var(--rose-gold-deep); }
+
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: none; }
+  .hamburger span { width: 24px; height: 1px; background: var(--black); transition: 0.3s; }
+
+  /* ─── HERO ─── */
+  #hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(145deg, #f2e0e6 0%, #faf0f3 40%, #f5e2ea 70%, #e8cdd6 100%);
+    animation: kenburns 18s ease-in-out infinite alternate;
+    transform-origin: center;
+  }
+
+  @keyframes kenburns {
+    0% { transform: scale(1) translate(0, 0); }
+    100% { transform: scale(1.08) translate(-1%, -1%); }
+  }
+
+  /* Bokeh particles */
+  .bokeh-container {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .bokeh {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,160,180,0.35) 0%, rgba(232,160,180,0) 70%);
+    animation: float-bokeh linear infinite;
+  }
+
+  @keyframes float-bokeh {
+    0% { transform: translateY(0) scale(1); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 0.6; }
+    100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(250,247,242,0.35);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+    padding: 2rem;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--rose-gold-deep);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 8vw, 6.5rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: var(--black);
+    opacity: 0;
+    animation: fadeUp 1s ease 0.5s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--rose-gold-deep);
+  }
+
+  .hero-tagline {
+    font-size: 0.9rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.7s forwards;
+  }
+
+  .hero-city {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--rose-gold);
+    margin-top: 0.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.9s forwards;
+  }
+
+  .hero-divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--rose-gold), transparent);
+    margin: 2rem auto;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.1s forwards;
+  }
+
+  .btn-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 1rem 2.5rem;
+    background: var(--black);
+    color: var(--cream);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: 1px solid var(--black);
+    transition: background 0.3s, color 0.3s, border-color 0.3s, transform 0.3s;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.3s forwards;
+  }
+  .btn-whatsapp:hover {
+    background: transparent;
+    color: var(--black);
+    transform: translateY(-2px);
+  }
+  .btn-whatsapp svg { flex-shrink: 0; }
+
+  /* ─── SCROLL INDICATOR ─── */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.8s forwards;
+    z-index: 2;
+  }
+  .scroll-indicator span {
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--rose-gold), transparent);
+    animation: scrollDrop 2s ease-in-out infinite;
+  }
+  @keyframes scrollDrop {
+    0%, 100% { opacity: 1; transform: scaleY(1); transform-origin: top; }
+    50% { opacity: 0.4; transform: scaleY(0.5); transform-origin: top; }
+  }
+
+  /* ─── SECTION BASE ─── */
+  section { padding: 7rem 2rem; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--rose-gold);
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--black);
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title em { font-style: italic; color: var(--rose-gold-deep); }
+
+  /* ─── FADE IN ANIMATION ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+  .fade-in-delay-1 { transition-delay: 0.1s; }
+  .fade-in-delay-2 { transition-delay: 0.2s; }
+  .fade-in-delay-3 { transition-delay: 0.3s; }
+  .fade-in-delay-4 { transition-delay: 0.4s; }
+  .fade-in-delay-5 { transition-delay: 0.5s; }
+
+  /* ─── THIN LINE ─── */
+  .gold-line {
+    width: 50px;
+    height: 1px;
+    background: var(--rose-gold);
+    margin-bottom: 2rem;
+  }
+
+  /* ─── SERVICES ─── */
+  #services { background: var(--white); }
+
+  .services-intro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: end;
+    margin-bottom: 4rem;
+  }
+
+  .services-note {
+    font-size: 0.9rem;
+    line-height: 1.9;
+    color: var(--text-muted);
+    align-self: end;
+  }
+
+  .service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5px;
+    background: rgba(232,160,180,0.15);
+  }
+
+  .service-card {
+    background: var(--white);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: none;
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0; height: 2px;
+    background: linear-gradient(90deg, var(--rose-gold-deep), var(--rose-gold));
+    transition: width 0.4s ease;
+  }
+
+  .service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(212,120,154,0.1);
+    z-index: 1;
+  }
+  .service-card:hover::before { width: 100%; }
+
+  .service-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+  }
+
+  .service-desc {
+    font-size: 0.82rem;
+    line-height: 1.8;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .service-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--rose-gold-deep);
+  }
+
+  .service-duration {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-top: 0.2rem;
+  }
+
+  /* ─── GALLERY ─── */
+  #gallery { background: var(--cream); }
+
+  .gallery-header { text-align: center; margin-bottom: 3rem; }
+  .gallery-header .gold-line { margin: 0 auto 2rem; }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 300px);
+    gap: 8px;
+  }
+
+  .gallery-item {
+    overflow: hidden;
+    position: relative;
+    background: #f0dce4;
+    cursor: none;
+  }
+
+  .gallery-item:first-child {
+    grid-row: 1 / 3;
+  }
+
+  .gallery-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #f2e0e6 0%, #e8cdd6 100%);
+    transition: transform 0.6s ease, filter 0.6s ease;
+  }
+
+  .gallery-placeholder-icon {
+    width: 40px; height: 40px;
+    border: 1px solid rgba(232,160,180,0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--rose-gold);
+    font-size: 1.2rem;
+  }
+
+  .gallery-placeholder-text {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(232,160,180,0.7);
+  }
+
+  .gallery-item:hover .gallery-placeholder {
+    transform: scale(1.05);
+    filter: brightness(1.05);
+  }
+
+  .gallery-item-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(26,26,26,0);
+    transition: background 0.4s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gallery-item:hover .gallery-item-overlay {
+    background: rgba(26,26,26,0.2);
+  }
+
+  /* ─── ABOUT ─── */
+  #about { background: var(--black); }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+  }
+
+  .about-image-wrap {
+    position: relative;
+  }
+
+  .about-image-placeholder {
+    width: 100%;
+    padding-top: 130%;
+    background: linear-gradient(145deg, #261e22 0%, #1e1619 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .about-image-placeholder::before {
+    content: '[YOUR PHOTO HERE]';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(232,160,180,0.3);
+  }
+
+  .about-image-placeholder::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 20px,
+      rgba(232,160,180,0.03) 20px,
+      rgba(232,160,180,0.03) 21px
+    );
+  }
+
+  .about-image-frame {
+    position: absolute;
+    top: 20px; right: -20px;
+    left: -20px; bottom: -20px;
+    border: 1px solid rgba(232,160,180,0.2);
+    z-index: -1;
+  }
+
+  .about-content .section-title { color: var(--cream); }
+  .about-content .section-label { color: var(--rose-gold); }
+
+  .about-bio {
+    font-size: 1rem;
+    line-height: 2;
+    color: rgba(250,247,242,0.7);
+    margin-bottom: 2rem;
+  }
+
+  .about-bio strong { color: var(--rose-gold); font-weight: 400; }
+
+  .about-signature {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 2rem;
+    color: var(--rose-gold);
+    margin-top: 2rem;
+  }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(232,160,180,0.2);
+  }
+
+  .stat-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: var(--rose-gold);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(250,247,242,0.4);
+    margin-top: 0.3rem;
+  }
+
+  /* ─── TESTIMONIALS ─── */
+  #testimonials { background: var(--cream); overflow: hidden; }
+
+  .testimonials-header { text-align: center; margin-bottom: 3rem; }
+  .testimonials-header .gold-line { margin: 0 auto 2rem; }
+
+  .testimonials-track-wrap { overflow: hidden; position: relative; }
+
+  .testimonials-track {
+    display: flex;
+    gap: 2rem;
+    animation: scrollTestimonials 22s linear infinite;
+    width: max-content;
+  }
+
+  .testimonials-track:hover { animation-play-state: paused; }
+
+  @keyframes scrollTestimonials {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .testimonial-card {
+    background: var(--white);
+    padding: 2.5rem;
+    width: 400px;
+    flex-shrink: 0;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s;
+    position: relative;
+  }
+
+  .testimonial-card:hover { border-bottom-color: var(--rose-gold); }
+
+  .stars { color: var(--rose-gold); font-size: 0.85rem; letter-spacing: 0.1em; margin-bottom: 1.2rem; }
+
+  .testimonial-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: var(--black);
+    margin-bottom: 1.5rem;
+  }
+
+  .testimonial-quote::before {
+    content: '\201C';
+    font-size: 3rem;
+    line-height: 0;
+    vertical-align: -0.8rem;
+    color: rgba(232,160,180,0.3);
+    margin-right: 0.2rem;
+  }
+
+  .testimonial-author { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); }
+
+  /* ─── CONTACT ─── */
+  #contact { background: var(--white); }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .contact-item {
+    margin-bottom: 2rem;
+  }
+
+  .contact-item-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--rose-gold);
+    margin-bottom: 0.5rem;
+  }
+
+  .contact-item-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    color: var(--black);
+  }
+
+  .contact-item-value a {
+    color: var(--black);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .contact-item-value a:hover { color: var(--rose-gold-deep); }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.9rem 2rem;
+    border: 1px solid var(--black);
+    color: var(--black);
+    text-decoration: none;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    transition: background 0.3s, color 0.3s;
+    margin-top: 0.5rem;
+  }
+  .btn-outline:hover { background: var(--black); color: var(--cream); }
+
+  .map-embed {
+    width: 100%;
+    height: 320px;
+    background: #e8e0d8;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .map-embed iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    filter: sepia(20%) saturate(0.8);
+  }
+
+  .map-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #f2e0e6 0%, #e8cdd6 100%);
+  }
+
+  .map-placeholder-text {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(212,120,154,0.6);
+    text-align: center;
+    padding: 0 2rem;
+    line-height: 1.8;
+  }
+
+  .map-pin {
+    width: 24px; height: 24px;
+    border: 2px solid var(--rose-gold);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    margin-bottom: 0.5rem;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--black);
+    padding: 4rem 2rem 2rem;
+    text-align: center;
+    position: relative;
+  }
+
+  footer::before {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 1px;
+    background: var(--rose-gold);
+    margin: 0 auto 3rem;
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--cream);
+    letter-spacing: 0.08em;
+  }
+
+  .footer-tagline {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(250,247,242,0.3);
+    margin-top: 0.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .footer-social a {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(250,247,242,0.5);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-social a:hover { color: var(--rose-gold); }
+
+  .footer-copy {
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    color: rgba(250,247,242,0.2);
+    border-top: 1px solid rgba(250,247,242,0.07);
+    padding-top: 2rem;
+  }
+
+  /* ─── FLOATING WHATSAPP ─── */
+  .float-whatsapp {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .float-whatsapp-label {
+    background: var(--black);
+    color: var(--cream);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    opacity: 0;
+    transform: translateX(10px);
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .float-whatsapp:hover .float-whatsapp-label {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .float-whatsapp-btn {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: #25D366;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.35);
+    animation: pulse-wa 3s ease-in-out infinite;
+    transition: transform 0.3s;
+  }
+
+  .float-whatsapp-btn:hover {
+    animation: none;
+    transform: scale(1.1);
+  }
+
+  @keyframes pulse-wa {
+    0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.35), 0 0 0 0 rgba(37,211,102,0.25); }
+    50% { box-shadow: 0 4px 20px rgba(37,211,102,0.35), 0 0 0 14px rgba(37,211,102,0); }
+  }
+
+  /* ─── MOBILE NAV ─── */
+  .mobile-nav {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--cream);
+    z-index: 99;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+  }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-weight: 300;
+    color: var(--black);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .mobile-nav a:hover { color: var(--rose-gold-deep); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 1.5rem; }
+    nav.scrolled { padding: 0.9rem 1.5rem; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .about-grid, .contact-grid, .services-intro { grid-template-columns: 1fr; gap: 3rem; }
+    .gallery-grid {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(3, 240px);
+    }
+    .gallery-item:first-child { grid-row: 1 / 2; }
+    .testimonials-track { animation-duration: 30s; }
+  }
+
+  @media (max-width: 600px) {
+    section { padding: 5rem 1.2rem; }
+    .gallery-grid {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: repeat(3, 180px);
+    }
+    .hero-title { font-size: 3rem; }
+    .about-stats { grid-template-columns: repeat(3, 1fr); }
+    .float-whatsapp { bottom: 1.2rem; right: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADING BAR -->
+<div id="loading-bar"></div>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- FLOATING WHATSAPP -->
+<div class="float-whatsapp">
+  <span class="float-whatsapp-label">Book via WhatsApp</span>
+  <a href="https://wa.me/[PHONENUMBER]" target="_blank" class="float-whatsapp-btn" aria-label="Contact on WhatsApp">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#hero" class="nav-logo">[BUSINESS NAME]</a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="#services" onclick="closeMobileNav()">Services</a>
+  <a href="#gallery" onclick="closeMobileNav()">Gallery</a>
+  <a href="#about" onclick="closeMobileNav()">About</a>
+  <a href="#testimonials" onclick="closeMobileNav()">Reviews</a>
+  <a href="#contact" onclick="closeMobileNav()">Contact</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="bokeh-container" id="bokehContainer"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Lash Studio · Est. [YEAR]</p>
+    <h1 class="hero-title">[Your<br><em>Business</em><br>Name Here]</h1>
+    <p class="hero-tagline">[Your tagline — e.g. "Where beauty meets precision"]</p>
+    <p class="hero-city">— [Your City, State] —</p>
+    <div class="hero-divider"></div>
+    <a href="https://wa.me/[PHONENUMBER]" target="_blank" class="btn-whatsapp">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+      Book Your Appointment
+    </a>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-inner">
+    <div class="services-intro fade-in">
+      <div>
+        <p class="section-label">Our Services</p>
+        <h2 class="section-title">Lashes crafted<br>for <em>every</em> vision</h2>
+        <div class="gold-line"></div>
+      </div>
+      <p class="services-note">
+        [Replace this with a short intro paragraph about your services, approach, or what makes your lash work special. Keep it to 2-3 sentences — warm, personal, and confident.]
+      </p>
+    </div>
+    <div class="service-grid">
+      <div class="service-card fade-in fade-in-delay-1">
+        <div class="service-name">Classic Lashes</div>
+        <p class="service-desc">[Description — e.g. "One single extension applied to each natural lash for a timeless, natural look. Perfect for lash extension beginners."]</p>
+        <div class="service-price">$[00]</div>
+        <div class="service-duration">[Duration, e.g. 90 min]</div>
+      </div>
+      <div class="service-card fade-in fade-in-delay-2">
+        <div class="service-name">Hybrid Set</div>
+        <p class="service-desc">[Description — e.g. "A mix of classic and volume lashes for a textured, wispy look. The best of both worlds — full but natural."]</p>
+        <div class="service-price">$[00]</div>
+        <div class="service-duration">[Duration, e.g. 2 hrs]</div>
+      </div>
+      <div class="service-card fade-in fade-in-delay-3">
+        <div class="service-name">Volume Set</div>
+        <p class="service-desc">[Description — e.g. "Handcrafted fans of ultra-fine lashes for a dramatically full, fluffy finish. Ideal for a glam or bold look."]</p>
+        <div class="service-price">$[00]</div>
+        <div class="service-duration">[Duration, e.g. 2.5 hrs]</div>
+      </div>
+      <div class="service-card fade-in fade-in-delay-4">
+        <div class="service-name">Mega Volume</div>
+        <p class="service-desc">[Description — e.g. "Maximum drama and density using the finest, lightest lashes. For those who love an unapologetically bold look."]</p>
+        <div class="service-price">$[00]</div>
+        <div class="service-duration">[Duration, e.g. 3 hrs]</div>
+      </div>
+      <div class="service-card fade-in fade-in-delay-5">
+        <div class="service-name">Infill / Refill</div>
+        <p class="service-desc">[Description — e.g. "Recommended every 2–3 weeks to maintain fullness and keep your set looking fresh. Prices vary by set type."]</p>
+        <div class="service-price">From $[00]</div>
+        <div class="service-duration">[Duration, e.g. 45–90 min]</div>
+      </div>
+      <div class="service-card fade-in fade-in-delay-1">
+        <div class="service-name">Lash Lift & Tint</div>
+        <p class="service-desc">[Description — e.g. "A low-maintenance treatment that lifts and curls your natural lashes from the root, paired with a keratin tint."]</p>
+        <div class="service-price">$[00]</div>
+        <div class="service-duration">[Duration, e.g. 60 min]</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="section-inner">
+    <div class="gallery-header fade-in">
+      <p class="section-label">Portfolio</p>
+      <h2 class="section-title">The <em>work</em> speaks<br>for itself</h2>
+      <div class="gold-line"></div>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item fade-in fade-in-delay-1">
+        <div class="gallery-placeholder">
+          <div class="gallery-placeholder-icon">✦</div>
+          <span class="gallery-placeholder-text">Photo 1 — [Add your best work here]</span>
+        </div>
+        <div class="gallery-item-overlay"></div>
+      </div>
+      <div class="gallery-item fade-in fade-in-delay-2">
+        <div class="gallery-placeholder">
+          <div class="gallery-placeholder-icon">✦</div>
+          <span class="gallery-placeholder-text">Photo 2</span>
+        </div>
+        <div class="gallery-item-overlay"></div>
+      </div>
+      <div class="gallery-item fade-in fade-in-delay-3">
+        <div class="gallery-placeholder">
+          <div class="gallery-placeholder-icon">✦</div>
+          <span class="gallery-placeholder-text">Photo 3</span>
+        </div>
+        <div class="gallery-item-overlay"></div>
+      </div>
+      <div class="gallery-item fade-in fade-in-delay-4">
+        <div class="gallery-placeholder">
+          <div class="gallery-placeholder-icon">✦</div>
+          <span class="gallery-placeholder-text">Photo 4</span>
+        </div>
+        <div class="gallery-item-overlay"></div>
+      </div>
+      <div class="gallery-item fade-in fade-in-delay-5">
+        <div class="gallery-placeholder">
+          <div class="gallery-placeholder-icon">✦</div>
+          <span class="gallery-placeholder-text">Photo 5</span>
+        </div>
+        <div class="gallery-item-overlay"></div>
+      </div>
+      <div class="gallery-item fade-in fade-in-delay-2">
+        <div class="gallery-placeholder">
+          <div class="gallery-placeholder-icon">✦</div>
+          <span class="gallery-placeholder-text">Photo 6</span>
+        </div>
+        <div class="gallery-item-overlay"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div class="about-image-wrap fade-in">
+        <div class="about-image-placeholder"></div>
+        <div class="about-image-frame"></div>
+      </div>
+      <div class="about-content fade-in fade-in-delay-2">
+        <p class="section-label">About Me</p>
+        <h2 class="section-title">Hello, I'm<br><em>[Your Name]</em></h2>
+        <div class="gold-line"></div>
+        <p class="about-bio">
+          [Replace this with your personal story. Talk about why you fell in love with lashes, how long you've been doing this, what drives your passion for the craft. Maybe mention where you trained, a specialty you're proud of, or what your clients mean to you.]
+        </p>
+        <p class="about-bio">
+          [Second paragraph — e.g. "Every client who sits in my chair deserves to feel <strong>seen and celebrated</strong>. I take time to understand your lifestyle, your vision, and your natural lash health. Your safety and comfort always come first."]
+        </p>
+        <a href="https://wa.me/[PHONENUMBER]" target="_blank" class="btn-outline" style="border-color: rgba(232,160,180,0.5); color: var(--cream);">
+          Let's Connect
+        </a>
+        <div class="about-signature">[Your Name]</div>
+        <div class="about-stats">
+          <div>
+            <div class="stat-number" data-count="[500]">0</div>
+            <div class="stat-label">Happy Clients</div>
+          </div>
+          <div>
+            <div class="stat-number" data-count="[5]">0</div>
+            <div class="stat-label">Years Experience</div>
+          </div>
+          <div>
+            <div class="stat-number" data-count="[98]">0</div>
+            <div class="stat-label">% Satisfaction</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section-inner">
+    <div class="testimonials-header fade-in">
+      <p class="section-label">Client Love</p>
+      <h2 class="section-title">Words from<br>the <em>chair</em></h2>
+      <div class="gold-line"></div>
+    </div>
+  </div>
+  <div class="testimonials-track-wrap fade-in">
+    <div class="testimonials-track" id="testimonialsTrack">
+      <!-- Original set -->
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-quote">[Replace with real testimonial — e.g. "I've been going to [Name] for over a year and I genuinely cannot imagine trusting anyone else with my lashes. She's meticulous, warm, and the results are always beyond what I imagined."]</p>
+        <div class="testimonial-author">— [Client First Name], [City]</div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-quote">[Replace with real testimonial — e.g. "The most relaxing appointment I've ever had. I fell asleep in the chair and woke up with the most stunning lashes. Highly recommend the hybrid set!"]</p>
+        <div class="testimonial-author">— [Client First Name]</div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-quote">[Replace with real testimonial — e.g. "As someone with sensitive eyes, I was nervous about extensions. [Name] walked me through everything and made me feel so at ease. My lashes have never looked better."]</p>
+        <div class="testimonial-author">— [Client First Name], [Platform, e.g. Google]</div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-quote">[Replace with real testimonial — e.g. "Booked for my wedding and she absolutely nailed the brief. My lashes looked perfect in every single photo. The whole bridal party came!"]</p>
+        <div class="testimonial-author">— [Client First Name], Bride</div>
+      </div>
+      <!-- Duplicate for seamless loop -->
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-quote">[Replace with real testimonial — e.g. "I've been going to [Name] for over a year and I genuinely cannot imagine trusting anyone else with my lashes. She's meticulous, warm, and the results are always beyond what I imagined."]</p>
+        <div class="testimonial-author">— [Client First Name], [City]</div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-quote">[Replace with real testimonial — e.g. "The most relaxing appointment I've ever had. I fell asleep in the chair and woke up with the most stunning lashes. Highly recommend the hybrid set!"]</p>
+        <div class="testimonial-author">— [Client First Name]</div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-quote">[Replace with real testimonial — e.g. "As someone with sensitive eyes, I was nervous about extensions. [Name] walked me through everything and made me feel so at ease. My lashes have never looked better."]</p>
+        <div class="testimonial-author">— [Client First Name], [Platform]</div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-quote">[Replace with real testimonial — e.g. "Booked for my wedding and she absolutely nailed the brief. My lashes looked perfect in every single photo."]</p>
+        <div class="testimonial-author">— [Client First Name], Bride</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="contact-grid">
+      <div class="fade-in">
+        <p class="section-label">Get In Touch</p>
+        <h2 class="section-title">Ready to<br><em>transform</em><br>your lashes?</h2>
+        <div class="gold-line"></div>
+        <div class="contact-item">
+          <div class="contact-item-label">WhatsApp</div>
+          <div class="contact-item-value">
+            <a href="https://wa.me/[PHONENUMBER]" target="_blank">Message us to book</a>
+          </div>
+          <a href="https://wa.me/[PHONENUMBER]" target="_blank" class="btn-outline">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            Book Now on WhatsApp
+          </a>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-label">Phone</div>
+          <div class="contact-item-value">
+            <a href="tel:[PHONE NUMBER]">[+00 000 000 0000]</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-label">Instagram</div>
+          <div class="contact-item-value">
+            <a href="https://instagram.com/[YOURUSERNAME]" target="_blank">@[yourusername]</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-label">Location</div>
+          <div class="contact-item-value" style="font-size: 1rem; font-family: 'Jost', sans-serif; color: var(--text-muted); font-weight: 300;">
+            [Your Studio Address]<br>[City, State, Postcode]
+          </div>
+        </div>
+      </div>
+      <div class="fade-in fade-in-delay-2">
+        <div class="map-embed">
+          <!-- REPLACE THIS PLACEHOLDER WITH YOUR REAL GOOGLE MAPS EMBED:
+               1. Go to maps.google.com
+               2. Search your studio address
+               3. Click Share > Embed a map
+               4. Copy the <iframe> code and paste it here
+          -->
+          <div class="map-placeholder">
+            <div class="map-pin"></div>
+            <p class="map-placeholder-text">
+              [Google Maps Embed Goes Here]<br>
+              Go to maps.google.com → Share → Embed a map<br>
+              and paste the &lt;iframe&gt; code here
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">[Business Name]</div>
+  <p class="footer-tagline">[Tagline — e.g. Luxury Lash Studio · [City]]</p>
+  <div class="footer-social">
+    <a href="https://instagram.com/[YOURUSERNAME]" target="_blank">Instagram</a>
+    <a href="https://wa.me/[PHONENUMBER]" target="_blank">WhatsApp</a>
+    <a href="https://facebook.com/[YOURPAGE]" target="_blank">Facebook</a>
+    <a href="https://tiktok.com/@[YOURUSERNAME]" target="_blank">TikTok</a>
+  </div>
+  <p class="footer-copy">© <span id="year"></span> [Business Name]. All rights reserved. Designed with ♥</p>
+</footer>
+
+<script>
+  /* ─── LOADING BAR ─── */
+  const bar = document.getElementById('loading-bar');
+  let w = 0;
+  const barInterval = setInterval(() => {
+    w += Math.random() * 20;
+    if (w >= 90) { clearInterval(barInterval); w = 90; }
+    bar.style.width = w + '%';
+  }, 120);
+  window.addEventListener('load', () => {
+    clearInterval(barInterval);
+    bar.style.width = '100%';
+    setTimeout(() => { bar.style.opacity = 0; }, 600);
+  });
+
+  /* ─── CUSTOM CURSOR ─── */
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', (e) => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    cursorRing.style.left = rx + 'px';
+    cursorRing.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+  document.querySelectorAll('a, button, .service-card, .gallery-item').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+  });
+
+  /* ─── NAV SCROLL ─── */
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  /* ─── HAMBURGER ─── */
+  const hamburger = document.getElementById('hamburger');
+  const mobileNav = document.getElementById('mobileNav');
+  hamburger.addEventListener('click', () => {
+    mobileNav.classList.toggle('open');
+  });
+  function closeMobileNav() { mobileNav.classList.remove('open'); }
+
+  /* ─── BOKEH PARTICLES ─── */
+  const bokehContainer = document.getElementById('bokehContainer');
+  function createBokeh() {
+    const b = document.createElement('div');
+    b.classList.add('bokeh');
+    const size = 40 + Math.random() * 120;
+    b.style.cssText = `
+      width: ${size}px;
+      height: ${size}px;
+      left: ${Math.random() * 100}%;
+      top: ${70 + Math.random() * 40}%;
+      animation-duration: ${8 + Math.random() * 14}s;
+      animation-delay: ${Math.random() * 8}s;
+      filter: blur(${8 + Math.random() * 16}px);
+      opacity: 0;
+    `;
+    bokehContainer.appendChild(b);
+    setTimeout(() => b.remove(), 25000);
+  }
+  for (let i = 0; i < 12; i++) createBokeh();
+  setInterval(createBokeh, 2500);
+
+  /* ─── SCROLL FADE IN ─── */
+  const fadeEls = document.querySelectorAll('.fade-in');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  fadeEls.forEach(el => observer.observe(el));
+
+  /* ─── COUNT UP STATS ─── */
+  const statEls = document.querySelectorAll('[data-count]');
+  const statObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const rawTarget = el.getAttribute('data-count');
+        const target = parseInt(rawTarget.replace(/\[|\]/g, '')) || 0;
+        let current = 0;
+        const step = Math.ceil(target / 60);
+        const timer = setInterval(() => {
+          current = Math.min(current + step, target);
+          el.textContent = current + (rawTarget.includes('%') ? '+' : '+');
+          if (current >= target) {
+            el.textContent = target + (target < 10 ? '' : '+');
+            clearInterval(timer);
+          }
+        }, 25);
+        statObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  statEls.forEach(el => statObserver.observe(el));
+
+  /* ─── FOOTER YEAR ─── */
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
